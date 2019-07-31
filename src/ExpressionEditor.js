@@ -1,28 +1,31 @@
 'use strict';
 
 var React = require('react');
+
+var createReactClass = require('create-react-class');
+var PropTypes = require('prop-types');
 var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 var PatternEditor = require('./PatternEditor');
 var FlagsEditor = require('./FlagsEditor');
 
-var ExpressionEditor = React.createClass({
+var ExpressionEditor = createReactClass({
   mixins: [PureRenderMixin],
 
   propTypes: {
-    pattern: React.PropTypes.string.isRequired,
-    flags: React.PropTypes.string.isRequired,
+    pattern: PropTypes.string.isRequired,
+    flags: PropTypes.string.isRequired,
 
-    onPatternChange: React.PropTypes.func.isRequired,
-    onFlagsChange: React.PropTypes.func.isRequired,
+    onPatternChange: PropTypes.func.isRequired,
+    onFlagsChange: PropTypes.func.isRequired,
 
-    width: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.number
+    width: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
     ]),  // Defaults to 100%
-    height: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.number
+    height: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
     ])   // Defaults to auto
   },
 

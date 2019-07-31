@@ -2,8 +2,10 @@
 
 var React = require('react');
 var ReactDOM = require('react-dom');
+var PropTypes = require('prop-types');
+var createReactClass = require('create-react-class');
 var PureRenderMixin = require('react-addons-pure-render-mixin');
-var CodeMirror = require('react-codemirror');
+var CodeMirror = require('react-codemirror2').Controlled;
 
 var SourceHighlighter = require('regexr-site/js/SourceHighlighter');
 var RegExLexer = require('regexr-site/js/RegExLexer');
@@ -14,33 +16,33 @@ var CMUtils = require('regexr-site/js/utils/CMUtils');
 
 var RegexUtils = require('./RegexUtils');
 
-var SourceEditor = React.createClass({
+var SourceEditor = createReactClass({
   mixins: [PureRenderMixin],
 
   propTypes: {
-    pattern: React.PropTypes.string,
-    flags: React.PropTypes.string,
+    pattern: PropTypes.string,
+    flags: PropTypes.string,
 
-    text: React.PropTypes.string.isRequired,
-    onTextChange: React.PropTypes.func,
+    text: PropTypes.string.isRequired,
+    onTextChange: PropTypes.func,
     // If omitted, text will be readOnly
 
-    containerStyle: React.PropTypes.object,
+    containerStyle: PropTypes.object,
     // Extra style for container div
 
-    width: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.number
+    width: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
     ]),
-    height: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.number
+    height: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
     ]),
 
-    options: React.PropTypes.object,
+    options: PropTypes.object,
     // Additional options for the CodeMirror editor
 
-    onViewportChange: React.PropTypes.func,
+    onViewportChange: PropTypes.func,
     // A listener to see which matches are visible
   },
 
@@ -54,10 +56,16 @@ var SourceEditor = React.createClass({
     };
   },
 
+  componentWillMount: function() {
+    this._cmElem = React.createRef();
+    this._sourceCanvas = React.createRef();
+    this._sourceMeasure = React.createRef();
+  },
+
   componentDidMount: function() {
     this._exprLexer = new RegExLexer();
 
-    var cmElem = this._cmElem;
+    var cmElem = this._cmElem.current;
 
     // We need some way of styling width/height
     // of this for sizing the cmDiv to 100%
@@ -65,14 +73,14 @@ var SourceEditor = React.createClass({
     cmDiv.style.width = this.props.width || '100%';
     cmDiv.style.height = this.props.height || 'auto';
 
-    var cm = cmElem.getCodeMirror();
+    var cm = cmElem.editor;
     cm.setSize(this.props.width, this.props.height);
 
     var options = this.props.options || {};
     var themeColor = options.themeColor || '#6CF';
 
     // Initialize source highlighter, tooltips
-    this.sourceHighlighter = new SourceHighlighter(cm, this._sourceCanvas, themeColor);
+    this.sourceHighlighter = new SourceHighlighter(cm, this._sourceCanvas.current, themeColor);
     this.sourceTooltip = Tooltip.add(cm.display.lineDiv);
     this.sourceTooltip.on('mousemove', this.handleMouseMove, this);
     this.sourceTooltip.on('mouseout', this.handleMouseOut, this);
@@ -83,13 +91,13 @@ var SourceEditor = React.createClass({
   },
 
   componentWillUnmount: function() {
-    window.removeEventListener(this._resizeListener);
+    window.removeEventListener('resize', this._resizeListener);
   },
 
   resizeCanvas: function() {
-    var rect = this._sourceMeasure.getBoundingClientRect();
-    this._sourceCanvas.width = rect.right - rect.left || 0;
-    this._sourceCanvas.height = rect.bottom - rect.top || 0;
+    var rect = this._sourceMeasure.current.getBoundingClientRect();
+    this._sourceCanvas.current.width = rect.right - rect.left || 0;
+    this._sourceCanvas.current.height = rect.bottom - rect.top || 0;
 
     this.redraw();
   },
@@ -136,7 +144,7 @@ var SourceEditor = React.createClass({
       var hoverMatch = null;
 
       if (!error && hoverX && hoverY) {
-        var cm = this._cmElem.getCodeMirror();
+        var cm = this._cmElem.current.editor;
         // Check what index character we're hovering over
         var index = CMUtils.getCharIndexAt(cm, hoverX, hoverY);
 
@@ -172,7 +180,7 @@ var SourceEditor = React.createClass({
   sendOnViewportChange: function(matches) {
     if (!this.props.onViewportChange) return;
 
-    var cm = this._cmElem.getCodeMirror();
+    var cm = this._cmElem.current.editor;
 
     var viewport = cm.getScrollInfo();
     var left = viewport.left;
@@ -248,7 +256,7 @@ var SourceEditor = React.createClass({
    * @param {int} matchIndex    index of the match
    */
   scrollToMatch: function(matchIndex) {
-    var cm = this._cmElem.getCodeMirror();
+    var cm = this._cmElem.current.editor;
     this.getMatches(this.props.text, function(error, matches) {
       var match = matches[matchIndex];
 
@@ -272,11 +280,11 @@ var SourceEditor = React.createClass({
 
     return (<div style={Object.assign(style, containerStyle)}>
       <canvas className="regexr-source-canvas" width="1" height="1"
-          ref={function(elem) { this._sourceCanvas = elem; }.bind(this)}></canvas>
+          ref={this._sourceCanvas} />
 
       <div className="regexr-source-measure"
           style={style}
-          ref={function(elem) { this._sourceMeasure = elem; }.bind(this)}>
+          ref={this._sourceMeasure}>
         <CodeMirror
             className="regexr-source-editor"
             onChange={this.handleCMChange}
@@ -287,7 +295,7 @@ var SourceEditor = React.createClass({
               readOnly: !this.props.onTextChange
             }, options)}
             onScroll={this.handleCMScroll}
-            ref={function(elem) { this._cmElem = elem; }.bind(this)} />
+            ref={this._cmElem} />
       </div>
     </div>);
   }

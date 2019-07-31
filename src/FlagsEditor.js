@@ -1,17 +1,19 @@
 'use strict';
 
 var React = require('react');
+var createReactClass = require('create-react-class');
+var PropTypes = require('prop-types');
 var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 var Overlay = require('react-bootstrap/lib/Overlay');
 var Tooltip = require('./Tooltip');
 
-var FlagsEditor = React.createClass({
+var FlagsEditor = createReactClass({
   mixins: [PureRenderMixin],
 
   propTypes: {
-    value: React.PropTypes.string.isRequired,
-    onChange: React.PropTypes.func.isRequired
+    value: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired
   },
 
   getInitialState: function() {

@@ -1,12 +1,13 @@
 'use strict';
 
 var React = require('react');
+var createReactClass = require('create-react-class');
 var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 var ExpressionEditor = require('../src/ExpressionEditor');
 var SourceEditor = require('../src/SourceEditor');
 
-var MainPage = React.createClass({
+var MainPage = createReactClass({
   mixins: [PureRenderMixin],
 
   getInitialState: function() {
@@ -35,15 +36,22 @@ var MainPage = React.createClass({
     };
   },
 
+  componentWillMount: function() {
+    this._sourceEditor = React.createRef();
+  },
+
   handlePatternChange: function(value) {
+    console.log('[MainPage] handlePatternChange', value);
     this.setState({ pattern: value });
   },
 
   handleFlagsChange: function(value) {
+    console.log('[MainPage] handleFlagsChange', value);
     this.setState({ flags: value });
   },
 
   handleTextChange: function(value) {
+    console.log('[MainPage] handleTextChange', value);
     this.setState({ text: value });
   },
 
@@ -55,11 +63,13 @@ var MainPage = React.createClass({
   },
 
   scrollToPrev: function() {
-    this._sourceEditor.scrollToMatch(this.state.prevMatch);
+    console.log('[MainPage] scrollToPrev');
+    this._sourceEditor.current.scrollToMatch(this.state.prevMatch);
   },
 
   scrollToNext: function() {
-    this._sourceEditor.scrollToMatch(this.state.nextMatch);
+    console.log('[MainPage] scrollToNext');
+    this._sourceEditor.current.scrollToMatch(this.state.nextMatch);
   },
 
   render: function() {
@@ -81,7 +91,7 @@ var MainPage = React.createClass({
             lineWrapping: true
           }}
           onViewportChange={this.handleViewportChange}
-          ref={function(elem) { this._sourceEditor = elem; }.bind(this)} />
+          ref={this._sourceEditor} />
 
       <button onClick={this.scrollToPrev} type="button">Previous match</button>
       <button onClick={this.scrollToNext} type="button">Next match</button>

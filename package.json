@@ -23,11 +23,13 @@
   },
   "homepage": "https://github.com/pxpeterxu/react-regexr#readme",
   "dependencies": {
-    "codemirror": "~5",
-    "react": ">=0.14",
+    "codemirror": "^5.48.2",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.6",
     "react-addons-pure-render-mixin": ">=0.14",
     "react-bootstrap": ">=0.29",
-    "react-codemirror": "~0.3",
+    "react-codemirror2": "^6.0.0",
+    "react-dom": "^16.8.6",
     "regexr-site": "pxpeterxu/regexr"
   },
   "devDependencies": {
@@ -38,6 +40,7 @@
     "babel-preset-react": "^6.23.0",
     "babelify": "^7.2.0",
     "browserify": "^12.0.2",
+    "create-react-class": "^15.6.3",
     "css-loader": "^0.27.3",
     "eslint": "^2.13.1",
     "eslint-config-airbnb": "^9.0.1",
@@ -58,7 +61,6 @@
     "gulp-watch": "^4.3.5",
     "minifyify": "^7.3.2",
     "node-sass": "^4.5.0",
-    "react-dom": "^15.4.2",
     "run-sequence": "^1.1.5",
     "sass-loader": "^6.0.3",
     "vinyl-buffer": "^1.0.0",

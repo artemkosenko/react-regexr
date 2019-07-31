@@ -1,14 +1,16 @@
 'use strict';
 
 var React = require('react');
+var createReactClass = require('create-react-class');
 var PureRenderMixin = require('react-addons-pure-render-mixin');
+var PropTypes = require('prop-types');
 
-var Tooltip = React.createClass({
+var Tooltip = createReactClass({
   mixins: [PureRenderMixin],
 
   propTypes: {
-    children: React.PropTypes.node.isRequired,
-    className: React.PropTypes.string,
+    children: PropTypes.node.isRequired,
+    className: PropTypes.string,
   },
 
   render: function() {
