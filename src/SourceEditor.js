@@ -25,6 +25,7 @@ var SourceEditor = createReactClass({
 
     text: PropTypes.string.isRequired,
     onTextChange: PropTypes.func,
+    onTextBeforeChange: PropTypes.func,
     // If omitted, text will be readOnly
 
     containerStyle: PropTypes.object,
@@ -225,8 +226,8 @@ var SourceEditor = createReactClass({
     }
   },
 
-  handleCMChange: function(text) {
-    this.props.onTextChange(text);
+  handleCMChange: function(editor, data, value) {
+    this.props.onTextChange(value);
   },
 
   handleCMScroll: function() {
@@ -287,7 +288,8 @@ var SourceEditor = createReactClass({
           ref={this._sourceMeasure}>
         <CodeMirror
             className="regexr-source-editor"
-            onChange={this.handleCMChange}
+            onChange={this.props.onTextChange}
+            onBeforeChange={this.props.onTextBeforeChange}
             value={text}
             options={Object.assign({
               tabSize: 2,

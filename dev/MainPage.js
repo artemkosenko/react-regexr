@@ -39,22 +39,14 @@ var MainPage = createReactClass({
   componentWillMount: function() {
     this._sourceEditor = React.createRef();
   },
-
-  handlePatternChange: function(value) {
-    console.log('[MainPage] handlePatternChange', value);
-    this.setState({ pattern: value });
+  handleChange: function(name) {
+    return function(editor, data, value) {
+      this.setState({ [name]: value });
+    }.bind(this);
   },
-
   handleFlagsChange: function(value) {
-    console.log('[MainPage] handleFlagsChange', value);
     this.setState({ flags: value });
   },
-
-  handleTextChange: function(value) {
-    console.log('[MainPage] handleTextChange', value);
-    this.setState({ text: value });
-  },
-
   handleViewportChange: function(viewport) {
     this.setState({
       nextMatch: viewport.nextMatch,
@@ -63,12 +55,10 @@ var MainPage = createReactClass({
   },
 
   scrollToPrev: function() {
-    console.log('[MainPage] scrollToPrev');
     this._sourceEditor.current.scrollToMatch(this.state.prevMatch);
   },
 
   scrollToNext: function() {
-    console.log('[MainPage] scrollToNext');
     this._sourceEditor.current.scrollToMatch(this.state.nextMatch);
   },
 
@@ -81,11 +71,14 @@ var MainPage = createReactClass({
       <ExpressionEditor
           pattern={pattern}
           flags={flags}
-          onPatternChange={this.handlePatternChange}
+          onPatternChange={this.handleChange('pattern')}
+          onPatternBeforeChange={this.handleChange('pattern')}
           onFlagsChange={this.handleFlagsChange} />
-      <SourceEditor pattern={pattern}
+      <SourceEditor
+          pattern={pattern}
           flags="g"
-          onTextChange={this.handleTextChange}
+          onTextChange={this.handleChange('text')}
+          onTextBeforeChange={this.handleChange('text')}
           text={text}
           options={{
             lineWrapping: true

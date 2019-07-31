@@ -46,7 +46,7 @@ var PatternEditor = createReactClass({
 
     this._cmElem = elem;
     this._expressionHighlighter = new ExpressionHighlighter(cm);
-    // this._expressionHover = new ExpressionHover(cm, this._expressionHighlighter);
+    this._expressionHover = new ExpressionHover(cm, this._expressionHighlighter);
 
     this.updateCodeMirror(this.props.value);
   },
@@ -55,7 +55,7 @@ var PatternEditor = createReactClass({
     var parsed = RegexUtils.parsePattern(pattern);
 
     this._expressionHighlighter.draw(parsed.tree);
-    // this._expressionHover.token = parsed.token;
+    this._expressionHover.token = parsed.token;
   },
 
   componentDidUpdate: function() {
@@ -70,6 +70,7 @@ var PatternEditor = createReactClass({
           className="regexr regexr-expression-editor"
           value={value}
           onChange={this.props.onChange}
+          onBeforeChange={this.props.onBeforeChange}
           options={{
             lineNumbers: false,
             tabSize: 2,

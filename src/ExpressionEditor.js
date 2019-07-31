@@ -17,6 +17,7 @@ var ExpressionEditor = createReactClass({
     flags: PropTypes.string.isRequired,
 
     onPatternChange: PropTypes.func.isRequired,
+    onPatternBeforeChange: PropTypes.func.isRequired,
     onFlagsChange: PropTypes.func.isRequired,
 
     width: PropTypes.oneOfType([
@@ -36,6 +37,7 @@ var ExpressionEditor = createReactClass({
         <PatternEditor
             value={this.props.pattern}
             onChange={this.props.onPatternChange}
+            onBeforeChange={this.props.onPatternBeforeChange}
             width={this.props.width}
             height={this.props.height} />
       </div>
